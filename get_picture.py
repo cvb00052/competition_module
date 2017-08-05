@@ -39,9 +39,9 @@ def get_label(path):
     res_class = compile_class.findall(st)
     return res_name, res_class
  
-def load_data_pic_test(path, count):
+def load_data_pic_test(path, count, input_shape):
     #"创建data空数组和label空数组"
-    data = np.empty((count, 70, 70, 3), dtype = float)
+    data = np.empty((count, input_shape[0], input_shape[1], input_shape[2]), dtype = float)
     imgs = os.listdir(path)
     for i in range(count):
         #打开对应图片
@@ -51,7 +51,7 @@ def load_data_pic_test(path, count):
             continue
         #打开图片，初始化图片为70*70规格
         img = Image.open(newpath, mode = "r")
-        img = img.resize(size = (70, 70))
+        img = img.resize(size = (input_shape[0], input_shape[1]))
         arr = np.asarray(img, dtype = float)
         #记录图片数据
         data[i,: ,: ,:] = arr
@@ -60,9 +60,9 @@ def load_data_pic_test(path, count):
     return data
 
 
-def load_data_pic(path, count, listname, listclass):
+def load_data_pic(path, count, listname, listclass, input_shape):
     #"创建data空数组和label空数组"
-    data = np.empty((count, 70, 70, 3), dtype = float)
+    data = np.empty((count, input_shape[0], input_shape[1], input_shape[2]), dtype = float)
     label = np.empty((count, ), dtype = int)
     #"确定图片名字格式，与上一个函数一样"
     rule_picname = r'\b(\d*,+\d*).'
@@ -89,9 +89,9 @@ def load_data_pic(path, count, listname, listclass):
         #记录标签
         label[i] = listclass[pos]
         #print(data_name, label[i])
-        #打开图片，初始化图片为70*70规格
+        #打开图片，初始化图片为200*200规格
         img = Image.open(newpath, mode = "r")
-        img = img.resize(size = (70, 70))
+        img = img.resize(size = (input_shape[0], input_shape[1]))
         arr = np.asarray(img, dtype = float)
         #记录图片数据
         data[i,: ,: ,:] = arr
@@ -99,15 +99,15 @@ def load_data_pic(path, count, listname, listclass):
             print(i, 'pictures loaded')
     return data, label
 
-def load_data(label_path, pic_path):
+def load_data(label_path, pic_path, input_shape):
     count = get_num(pic_path)
     listname, listclass = get_label(label_path)
-    data, label = load_data_pic(pic_path, count, listname, listclass)
+    data, label = load_data_pic(pic_path, count, listname, listclass, input_shape)
     return data, label
 
-def load_data_test(pic_path):
+def load_data_test(pic_path, input_shape):
     count = get_num(pic_path)
-    data = load_data_pic_test(pic_path, count)
+    data = load_data_pic_test(pic_path, count, input_shape)
     return data
 
 
